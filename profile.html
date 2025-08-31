@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        /*
+         * ====== GLOBAL STYLES ======
+         * Reset, base font, background, and layout for the whole page
+         */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        /*
+         * ====== HEADER SECTION ======
+         * Contains logo, marquee, date/time, and navigation
+         */
+        .header {
+            background: white;
+            padding: 8px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+        .header-marquee {
+            flex: 1;
+            margin: 0 60px;
+            text-align: center;
+        }
+        .header-marquee h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(255, 0, 0, 0.6);
+            margin: 0;
+        }
+        .date-time-section .date,
+        .date-time-section .time {
+            font-size: 16px;
+            color: #333;
+        }
+        /*
+         * ====== NAVIGATION LINKS & DROPDOWN ======
+         */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-btn {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        /*
+         * ====== TIME SLOT SELECTION ======
+         * Row of selectable time slots for the lottery
+         */
+        .time-slots-container {
+            margin: 0;
+            padding: 0 10px 10px 10px;
+            background-color: pink;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .time-slots-row {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 5px;
+        }
+        .time-slot {
+            flex: 1;
+            padding: 5px 3px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .time-slot-header {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+        .selectable-slot {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .selectable-slot:hover {
+            background-color: #fff3cd;
+        }
+        .time-slot-result {
+            background-color: #9e9e9e;
+            color: white;
+        }
+        /*
+         * ====== LOTTERY SECTION ======
+         * Main area for ticket selection, controls, and summary
+         */
+        .lottery-section {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .lottery-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 15px;
+        }
+        .select-btn {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 18px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .refresh-btn {
+            background: #2196F3;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 18px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result-btn {
+            background: #FF9800;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 18px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .lottery-group-btn {
+            min-width: 100px;
+            width: 100px;
+            text-align: center;
+            padding: 5px 0;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            .lottery-controls {
+                flex-wrap: wrap;
+                gap: 2px;
+                justify-content: center;
+            }
+            .lottery-group-btn {
+                min-width: 70px;
+                width: 70px;
+                font-size: 12px;
+                padding: 4px 0;
+            }
+            .select-btn, .refresh-btn, .result-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            #evenOddQty, #endWithDigit, #endWithQty, #startWithDigit, #startWithQty {
+                width: 45px;
+                height: 24px;
+                font-size: 12px;
+            }
+        }
+        /*
+         * ====== TICKET GRID ======
+         * 1-50 ticket number inputs in a grid
+         */
+        .ticket-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 3px;
+            margin-bottom: 15px;
+        }
+        /*
+         * ====== SELECTED TICKETS SUMMARY ======
+         */
+        .selected-tickets {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 60%;
+        }
+        .selected-tickets h3 {
+            color: #333;
+            margin-bottom: 6px;
+            text-align: left;
+            font-size: 14px;
+        }
+        .selected-ticket-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1.2fr;
+            gap: 6px;
+            text-align: center;
+            padding: 6px;
+            background: white;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            font-size: 12px;
+        }
+        /*
+         * ====== BUY BUTTON & TOTAL ======
+         */
+        .buy-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .buy-btn:hover {
+            background: #c0392b;
+        }
+        /*
+         * ====== RESPONSIVE HEADER ======
+         */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        /*
+         * ====== HIGHLIGHT FOR SELECTED TIME SLOT ======
+         */
+        .time-slot.selected {
+            background-color: #ffd54f !important;
+            color: #222 !important;
+            border: 2px solid #ff9800 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===================== HEADER ===================== -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDhDMTMuMzcyIDggOCAxMy4zNzIgOCAyMEM4IDI2LjYyOCAxMy4zNzIgMzIgMjAgMzJDMjYuNjI4IDMyIDMyIDI2LjYyOCAzMiAyMEMzMiAxMy4zNzIgMjYuNjI4IDggMjAgOFoiIGZpbGw9IiM2NjdlZWEiLz4KPHBhdGggZD0iTTIwIDEyQzE2LjY5IDEyIDE0IDE0LjY5IDE0IDE4QzE0IDIxLjMxIDE2LjY5IDI0IDIwIDI0QzIzLjMxIDI0IDI2IDIxLjMxIDI2IDE4QzI2IDE0LjY5IDIzLjMxIDEyIDIwIDEyWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE2IDE2QzE2IDE2IDE4IDE4IDIwIDE4QzIyIDE4IDI0IDE2IDI0IDE2IiBzdHJva2U9IiM2NjdlZWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMiAyNkMxMiAyNiAxNiAyOCAyMCAyOEMyNCAyOCAyOCAyNiAyOCAyNiIgc3Ryb2tlPSIjNjY3ZWVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt="Eye Logo">
+            </div>
+            <div class="header-marquee">
+               <marquee behavior="alternate" direction="left"> <h1>Welcome to Vision Lottery</h1></marquee>
+            </div>
+            <div class="date-time-section">
+                <div class="date" id="currentDate">Today: </div>
+                <div class="time" id="currentTime">Current Time: </div>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <button class="dropdown-btn">S</button>
+                    <div class="dropdown-content">
+                        <div style="padding: 12px 16px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; font-size: 14px; color: #666;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background: #667eea; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">S</div>
+                                <div style="color: #333; font-weight: 500; font-size: 14px;">sharad@gmail.com</div>
+                            </div>
+                        </div>
+                        <a href="wallet.html">Wallet</a>
+                        <a href="help.html">Help</a>
+                        <a href="login.html">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== TIME SLOT SELECTION ===================== -->
+    <div class="time-slots-container">
+        <div class="time-slots-row" id="timeSlotRow">
+            <div class="time-slot time-slot-header">Time Slot</div>
+            <div class="time-slot time-slot-header selectable-slot">9-10 AM</div>
+            <div class="time-slot time-slot-header selectable-slot">10-11 AM</div>
+            <div class="time-slot time-slot-header selectable-slot">11-12 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">12-1 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">1-2 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">2-3 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">3-4 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">4-5 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">5-6 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">6-7 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">7-8 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">8-9 PM</div>
+            <div class="time-slot time-slot-header selectable-slot">9-10 PM</div>
+        </div>
+    </div>
+
+    <!-- ===================== LOTTERY SECTION ===================== -->
+    <div class="lottery-section">
+        <!-- Controls Section with proper spacing -->
+        <div class="lottery-controls" style="text-align: left; margin: 0; flex: 0 0 auto; display: flex; align-items: center; gap: 4px;">
+            <button class="select-btn" style="margin-right: 8px;">Select Ticket</button>
+            <button class="refresh-btn" style="margin-right: 8px;">Refresh</button>
+            <button class="result-btn" onclick="window.location.href='result.html'">Result</button>
+            <button id="evenBtn" class="lottery-group-btn" style="background: #4CAF50; color: white; border: 2px solid #45a049; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Even</button>
+            <button id="oddBtn" class="lottery-group-btn" style="background: #FF9800; color: white; border: 2px solid #e68900; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Odd</button>
+            <input id="evenOddQty" type="number" min="0" placeholder="Qty" style="width: 60px; height: 28px; font-size: 14px; border: 1px solid #aaa; border-radius: 4px; text-align: center; display: none;" />
+            <button id="endWithBtn" class="lottery-group-btn" style="background: #9b59b6; color: white; border: 2px solid #8e44ad; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Ends</button>
+            <input id="endWithDigit" type="number" min="0" max="9" placeholder="Digit" style="width: 50px; height: 28px; font-size: 14px; border: 1px solid #aaa; border-radius: 4px; text-align: center; display: none;" />
+            <input id="endWithQty" type="number" min="0" placeholder="Qty" style="width: 60px; height: 28px; font-size: 14px; border: 1px solid #aaa; border-radius: 4px; text-align: center; display: none;" />
+            <button id="startWithBtn" class="lottery-group-btn" style="background: #e74c3c; color: white; border: 2px solid #c0392b; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Starts</button>
+            <input id="startWithDigit" type="number" min="0" max="9" placeholder="Digit" style="width: 50px; height: 28px; font-size: 14px; border: 1px solid #aaa; border-radius: 4px; text-align: center; display: none;" />
+            <input id="startWithQty" type="number" min="0" placeholder="Qty" style="width: 60px; height: 28px; font-size: 14px; border: 1px solid #aaa; border-radius: 4px; text-align: center; display: none;" />
+        </div>
+
+        <!-- Second Div: Ticket Grid -->
+        <div class="ticket-grid" id="ticketGrid">
+            <!-- Ticket inputs will be generated by JavaScript -->
+        </div>
+
+        <script>
+        // ===================== TICKET GRID GENERATION =====================
+        // Dynamically create 1-50 ticket input boxes in the grid
+        const ticketGrid = document.getElementById('ticketGrid');
+        for (let i = 1; i <= 50; i++) {
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column';
+            div.style.alignItems = 'center';
+            div.style.justifyContent = 'center';
+            div.style.gap = '2px';
+            // Ticket number label
+            const label = document.createElement('label');
+            label.textContent = i;
+            label.style.fontWeight = 'bold';
+            label.style.fontSize = '12px';
+            label.setAttribute('for', 'ticket-input-' + i);
+            // Quantity input
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.min = '0';
+            input.value = '';
+            input.placeholder = 'Qty';
+            input.style.width = '38px';
+            input.style.height = '24px';
+            input.style.textAlign = 'center';
+            input.style.fontSize = '12px';
+            input.style.border = '1px solid #ddd';
+            input.style.borderRadius = '3px';
+            input.id = 'ticket-input-' + i;
+            input.className = 'ticket-qty-input';
+            // Listen for input changes to update summary
+            input.addEventListener('input', updateSelectedTickets);
+            div.appendChild(label);
+            div.appendChild(input);
+            ticketGrid.appendChild(div);
+        }
+
+        // ===================== TICKET ORDER TRACKING =====================
+        // Maintain the order in which tickets are added for summary display
+        let ticketOrder = [];
+        // Update the selected tickets summary and total
+        function updateSelectedTickets() {
+            const selectedTicketsList = document.getElementById('selectedTicketsList');
+            selectedTicketsList.innerHTML = '';
+            let found = false;
+            // Update ticketOrder based on current values
+            for (let i = 1; i <= 50; i++) {
+                const input = document.getElementById('ticket-input-' + i);
+                const qty = parseInt(input.value, 10);
+                const idx = ticketOrder.indexOf(i);
+                if (!isNaN(qty) && qty > 0) {
+                    if (idx === -1) ticketOrder.push(i); // Add to order if not present
+                } else {
+                    if (idx !== -1) ticketOrder.splice(idx, 1); // Remove if qty is 0
+                }
+            }
+            // Render selected tickets in the order they were added
+            for (const i of ticketOrder) {
+                const input = document.getElementById('ticket-input-' + i);
+                const qty = parseInt(input.value, 10);
+                if (!isNaN(qty) && qty > 0) {
+                    found = true;
+                    const row = document.createElement('div');
+                    row.className = 'selected-ticket-row';
+                    // Time Slot
+                    const slotDiv = document.createElement('div');
+                    slotDiv.textContent = selectedTimeSlot || '-';
+                    // Ticket number
+                    const ticketNumDiv = document.createElement('div');
+                    ticketNumDiv.textContent = i;
+                    // Quantity
+                    const qtyDiv = document.createElement('div');
+                    qtyDiv.textContent = qty;
+                    // Amount
+                    const amtDiv = document.createElement('div');
+                    amtDiv.textContent = '₹' + (2 * qty);
+                    row.appendChild(slotDiv);
+                    row.appendChild(ticketNumDiv);
+                    row.appendChild(qtyDiv);
+                    row.appendChild(amtDiv);
+                    selectedTicketsList.appendChild(row);
+                }
+            }
+            if (!found) {
+                selectedTicketsList.innerHTML = '<div style="color:#aaa;text-align:center;font-size:12px;">No tickets selected</div>';
+            }
+            // Update total amount
+            let total = 0;
+            for (let i = 1; i <= 50; i++) {
+                const input = document.getElementById('ticket-input-' + i);
+                const qty = parseInt(input.value, 10);
+                if (!isNaN(qty) && qty > 0) {
+                    total += 2 * qty;
+                }
+            }
+            document.getElementById('totalAmountValue').textContent = '₹' + total;
+        }
+
+        // ===================== ODD/EVEN GROUP BUTTONS =====================
+        let selectedType = null; // Track if 'even' or 'odd' is selected
+        const evenBtn = document.getElementById('evenBtn');
+        const oddBtn = document.getElementById('oddBtn');
+        const evenOddQty = document.getElementById('evenOddQty');
+
+        // Even button logic: show qty input for even tickets
+        evenBtn.addEventListener('click', function() {
+            selectedType = 'even';
+            evenBtn.style.background = '#388e3c';
+            oddBtn.style.backgroundColor = 'yellowgreen';
+            evenOddQty.style.display = 'inline-block';
+            evenOddQty.value = '';
+            evenOddQty.placeholder = 'Even Qty';
+            evenOddQty.focus();
+        });
+        // Odd button logic: show qty input for odd tickets
+        oddBtn.addEventListener('click', function() {
+            selectedType = 'odd';
+            oddBtn.style.background = '#e65100';
+            evenBtn.style.background = '#4CAF50';
+            evenOddQty.style.display = 'inline-block';
+            evenOddQty.value = '';
+            evenOddQty.placeholder = 'Odd Qty';
+            evenOddQty.focus();
+        });
+        // When qty is entered, add to all even/odd tickets
+        evenOddQty.addEventListener('input', function() {
+            const qty = parseInt(evenOddQty.value, 10);
+            if (isNaN(qty) || qty < 0) return;
+            
+            // Add quantity to existing values (don't replace)
+            for (let i = 1; i <= 50; i++) {
+                if ((selectedType === 'even' && i % 2 === 0) || (selectedType === 'odd' && i % 2 === 1)) {
+                    const input = document.getElementById('ticket-input-' + i);
+                    const currentValue = input.value.trim();
+                    const prev = parseInt(currentValue, 10) || 0;
+                    const newValue = prev + qty;
+                    input.value = newValue > 0 ? newValue.toString() : '';
+                }
+            }
+            updateSelectedTickets();
+        });
+
+        // ===================== ENDS WITH GROUP BUTTON =====================
+        const endWithBtn = document.getElementById('endWithBtn');
+        const endWithDigit = document.getElementById('endWithDigit');
+        const endWithQty = document.getElementById('endWithQty');
+        // Show digit and qty input for 'Ends' group
+        endWithBtn.addEventListener('click', function() {
+            endWithBtn.style.background = '#6c3483';
+            evenBtn.style.background = '#4CAF50';
+            oddBtn.style.background = '#FF9800';
+            evenOddQty.style.display = 'none';
+            endWithDigit.style.display = 'inline-block';
+            endWithQty.style.display = 'inline-block';
+            endWithDigit.value = '';
+            endWithQty.value = '';
+            endWithDigit.placeholder = 'Digit';
+            endWithQty.placeholder = 'Qty';
+            endWithDigit.focus();
+        });
+        // Add qty to all tickets ending with the given digit
+        function setEndWithQty() {
+            const digit = endWithDigit.value;
+            const qty = parseInt(endWithQty.value, 10);
+            if (digit === '' || isNaN(qty) || qty < 0) return;
+            let updated = false;
+            for (let i = 1; i <= 50; i++) {
+                if (i % 10 == digit) {
+                    const input = document.getElementById('ticket-input-' + i);
+                    const currentValue = input.value.trim();
+                    const prev = parseInt(currentValue, 10) || 0;
+                    const newValue = prev + qty;
+                    input.value = newValue > 0 ? newValue.toString() : '';
+                    updated = true;
+                }
+            }
+            updateSelectedTickets();
+            // Hide ends inputs after use if any ticket was updated
+            if (updated) {
+                endWithDigit.style.display = 'none';
+                endWithQty.style.display = 'none';
+                endWithDigit.value = '';
+                endWithQty.value = '';
+            }
+        }
+        endWithDigit.addEventListener('input', setEndWithQty);
+        endWithQty.addEventListener('input', setEndWithQty);
+
+        // ===================== STARTS WITH GROUP BUTTON =====================
+        const startWithBtn = document.getElementById('startWithBtn');
+        const startWithDigit = document.getElementById('startWithDigit');
+        const startWithQty = document.getElementById('startWithQty');
+        // Show digit and qty input for 'Starts' group
+        startWithBtn.addEventListener('click', function() {
+            startWithBtn.style.background = '#c0392b';
+            evenBtn.style.background = '#4CAF50';
+            oddBtn.style.background = '#FF9800';
+            endWithBtn.style.background = '#9b59b6';
+            evenOddQty.style.display = 'none';
+            endWithDigit.style.display = 'none';
+            endWithQty.style.display = 'none';
+            startWithDigit.style.display = 'inline-block';
+            startWithQty.style.display = 'inline-block';
+            startWithDigit.value = '';
+            startWithQty.value = '';
+            startWithDigit.placeholder = 'Digit';
+            startWithQty.placeholder = 'Qty';
+            startWithDigit.focus();
+        });
+        // Add qty to all tickets starting with the given digit
+        function setStartWithQty() {
+            const digit = startWithDigit.value;
+            const qty = parseInt(startWithQty.value, 10);
+            if (digit === '' || isNaN(qty) || qty < 0) return;
+            let updated = false;
+            for (let i = 1; i <= 50; i++) {
+                // Check if ticket number starts with the specified digit
+                if (i.toString().startsWith(digit)) {
+                    const input = document.getElementById('ticket-input-' + i);
+                    const currentValue = input.value.trim();
+                    const prev = parseInt(currentValue, 10) || 0;
+                    const newValue = prev + qty;
+                    input.value = newValue > 0 ? newValue.toString() : '';
+                    updated = true;
+                }
+            }
+            updateSelectedTickets();
+            // Hide starts inputs after use if any ticket was updated
+            if (updated) {
+                startWithDigit.style.display = 'none';
+                startWithQty.style.display = 'none';
+                startWithDigit.value = '';
+                startWithQty.value = '';
+            }
+        }
+        startWithDigit.addEventListener('input', setStartWithQty);
+        startWithQty.addEventListener('input', setStartWithQty);
+
+        // ===================== REFRESH BUTTON =====================
+        // Reset all ticket inputs, group fields, and highlights
+        document.querySelector('.refresh-btn').addEventListener('click', function() {
+            for (let i = 1; i <= 50; i++) {
+                document.getElementById('ticket-input-' + i).value = '';
+            }
+            ticketOrder = []; // Clear ticket order on refresh
+            // Hide and clear all group input fields
+            evenOddQty.style.display = 'none';
+            endWithDigit.style.display = 'none';
+            endWithQty.style.display = 'none';
+            startWithDigit.style.display = 'none';
+            startWithQty.style.display = 'none';
+            // Reset button highlights
+            evenBtn.style.background = '#4CAF50';
+            oddBtn.style.background = '#FF9800';
+            endWithBtn.style.background = '#9b59b6';
+            startWithBtn.style.background = '#e74c3c';
+            updateSelectedTickets();
+        });
+
+        // ===================== TIME SLOT SELECTION LOGIC =====================
+        let selectedTimeSlot = null; // Stores the currently selected time slot
+        const slotRow = document.getElementById('timeSlotRow');
+        const slotCells = slotRow.querySelectorAll('.selectable-slot');
+        // Disable ticket/qty inputs and group inputs by default
+        function setTicketInputsEnabled(enabled) {
+            for (let i = 1; i <= 50; i++) {
+                document.getElementById('ticket-input-' + i).disabled = !enabled;
+            }
+            evenOddQty.disabled = !enabled;
+            endWithDigit.disabled = !enabled;
+            endWithQty.disabled = !enabled;
+            startWithDigit.disabled = !enabled;
+            startWithQty.disabled = !enabled;
+        }
+        // Call after ticket inputs are generated to disable all
+        setTimeout(() => setTicketInputsEnabled(false), 0);
+        // Enable ticket inputs only after time slot is selected and 'Select Ticket' is clicked
+        document.querySelectorAll('.select-btn').forEach(btn => {
+            if (btn.textContent.trim().startsWith('Select Ticket')) {
+                btn.addEventListener('click', function() {
+                    if (selectedTimeSlot) {
+                        setTicketInputsEnabled(true);
+                    } else {
+                        alert('Please select a time slot first!');
+                    }
+                });
+            }
+        });
+        // On time slot selection, just highlight and set selectedTimeSlot
+        slotCells.forEach(cell => {
+            cell.addEventListener('click', function() {
+                slotCells.forEach(c => c.classList.remove('selected'));
+                cell.classList.add('selected');
+                selectedTimeSlot = cell.textContent;
+            });
+        });
+        // On refresh, also clear ticketOrder and disable inputs
+        document.querySelector('.refresh-btn').addEventListener('click', function() {
+            for (let i = 1; i <= 50; i++) {
+                document.getElementById('ticket-input-' + i).value = '';
+            }
+            ticketOrder = [];
+            setTicketInputsEnabled(false);
+            // Hide and clear all group input fields
+            evenOddQty.style.display = 'none';
+            endWithDigit.style.display = 'none';
+            endWithQty.style.display = 'none';
+            startWithDigit.style.display = 'none';
+            startWithQty.style.display = 'none';
+            // Reset button highlights
+            evenBtn.style.background = '#4CAF50';
+            oddBtn.style.background = '#FF9800';
+            endWithBtn.style.background = '#9b59b6';
+            startWithBtn.style.background = '#e74c3c';
+            updateSelectedTickets();
+        });
+
+        // ===================== REAL-TIME DATE & TIME =====================
+        // Update the date and time in the header every second
+        function updateDateTime() {
+            const now = new Date();
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const day = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            const dateStr = `Today: ${day}, ${month} ${date}, ${year}`;
+            let hour = now.getHours();
+            const min = now.getMinutes().toString().padStart(2, '0');
+            const sec = now.getSeconds().toString().padStart(2, '0');
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12;
+            hour = hour ? hour : 12;
+            const timeStr = `Current Time: ${hour}:${min}:${sec} ${ampm}`;
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // ===================== REDIRECT TO WALLET =====================
+        function redirectToWallet() {
+            const totalAmount = document.getElementById('totalAmountValue').textContent.replace('₹', '');
+            if (totalAmount > 0) {
+                // Save the current time slot as purchased
+                if (selectedTimeSlot) {
+                    const purchasedSlots = JSON.parse(localStorage.getItem('purchasedTimeSlots') || '[]');
+                    if (!purchasedSlots.includes(selectedTimeSlot)) {
+                        purchasedSlots.push(selectedTimeSlot);
+                        localStorage.setItem('purchasedTimeSlots', JSON.stringify(purchasedSlots));
+                    }
+                }
+                window.location.href = `wallet.html?totalAmount=${totalAmount}`;
+            } else {
+                alert('Please select some tickets first!');
+            }
+        }
+        </script>
+
+        <!-- ===================== SELECTED TICKETS & REMINDER ===================== -->
+        <div style="display: flex; gap: 15px; align-items: flex-start;">
+            <div class="selected-tickets">
+                <h3>Selected Tickets</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap: 6px; margin-bottom: 6px; text-align: center; font-weight: bold; background: #f8f9fa; padding: 6px; border-radius: 4px; font-size: 12px;">
+                    <div>Time Slot</div>
+                    <div>Ticket Number</div>
+                    <div>Ticket Quantity</div>
+                    <div>Amount (2×Qty)</div>
+                </div>
+                <div id="selectedTicketsList" style="min-height: 50px; border: 1px solid #ddd; border-radius: 4px; padding: 6px; background: #f9f9f9;">
+                    <!-- Selected tickets will appear here -->
+                </div>
+            </div>
+            <!-- Reminder Div -->
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 12px; width: 35%; min-height: 120px;">
+                <div style="font-size: 14px; font-weight: bold; color: #856404; margin-bottom: 8px;">⚠️ Important Reminder:</div>
+                <div style="font-size: 12px; color: #856404; line-height: 1.4;">
+                    If you have already selected tickets and completed the purchase, please refresh the page before starting a new purchase for same time slot.
+                </div>
+                <button class="spin-win-btn" onclick="window.location.href='spin.html'" style="background: #9b59b6; color: white; font-weight: bold; border: none; border-radius: 5px; padding: 8px 18px; font-size: 16px; cursor: pointer; margin-top: 10px; display: block; width: 100%; text-align: center;">🎰 Spin to Win</button>
+            </div>
+        </div>
+
+        <!-- ===================== TOTAL AMOUNT & BUY BUTTON ===================== -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 10px; margin-top: 5px;">
+            <div style="text-align: left;">
+                <div style="font-size: 16px; font-weight: bold; color: #333;">Total Amount:</div>
+                <div id="totalAmountValue" style="font-size: 20px; font-weight: bold; color: #667eea;">₹0</div>
+            </div>
+            <div style="text-align: right;">
+                <button class="buy-btn" onclick="redirectToWallet()" style="margin: 0; padding: 10px 20px; font-size: 14px;">Buy</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

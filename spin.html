@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spin & Win - 5 Rewards</title>
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transition: transform 5s ease-out;
+      background: conic-gradient(
+        #f44336 0deg 72deg,       /* Red - 25 pts */
+        #4caf50 72deg 144deg,     /* Green - 50 pts */
+        #2196f3 144deg 216deg,    /* Blue - 75 pts */
+        #ff9800 216deg 288deg,    /* Orange - 100 pts */
+        #9c27b0 288deg 360deg     /* Purple - 125 pts */
+      );
+    }
+
+    .pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 25px solid #000;
+      z-index: 10;
+    }
+
+    .spin-btn {
+      margin-top: 40px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    #history {
+      margin-top: 30px;
+      width: 280px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+
+    #history h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    #history ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #history li {
+      padding: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎯 Spin to Win!</h2>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"></div>
+  </div>
+
+  <button class="spin-btn" onclick="handleSpin()">SPIN</button>
+  <div id="result"></div>
+
+  <div id="history">
+    <h3>🎉 Reward History:</h3>
+    <ul id="history-list"></ul>
+  </div>
+
+  <script>
+    let deg = 0;
+
+    const rewards = [25, 50, 75, 100, 125];
+    const colorNames = ["Red", "Green", "Blue", "Orange", "Purple"];
+    const colorEmojis = ["🟥", "🟩", "🟦", "🟧", "🟪"];
+
+    // --- New logic for daily limit ---
+    let spinCount = 0;
+    let lastSpinDate = "";
+
+    function isSameDay(date1, date2) {
+      return date1 === date2;
+    }
+
+    function canSpinToday() {
+      const today = new Date().toDateString();
+      if (!isSameDay(today, lastSpinDate)) {
+        spinCount = 0;
+        lastSpinDate = today;
+      }
+
+      if (spinCount >= 2) {
+        alert("⛔ You can spin only 2 times per day.");
+        return false;
+      }
+
+      return true;
+    }
+
+    function handleSpin() {
+      // 👇 Optional: add your own condition check here
+      // if (!conditionMet) return;
+
+      if (!canSpinToday()) return;
+      spin();
+      spinCount++;
+    }
+
+    function spin() {
+      const wheel = document.getElementById('wheel');
+      const result = document.getElementById('result');
+      const historyList = document.getElementById('history-list');
+
+      const rand = Math.floor(Math.random() * 360);
+      const fullSpins = 5 * 360;
+      deg += fullSpins + rand;
+
+      wheel.style.transform = `rotate(${deg}deg)`;
+
+      setTimeout(() => {
+        const finalDeg = deg % 360;
+        const index = Math.floor((360 - finalDeg) / 72) % 5;
+
+        const reward = rewards[index];
+        const color = colorNames[index];
+        const emoji = colorEmojis[index];
+
+        const resultText = `🎁 You won: ${reward} points (${emoji} ${color})`;
+        result.textContent = resultText;
+
+        const li = document.createElement("li");
+        li.textContent = resultText;
+        historyList.prepend(li);
+      }, 5200);
+    }
+  </script>
+
+</body>
+</html>

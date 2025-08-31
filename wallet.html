@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Vision Lottery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            margin: 0;
+            padding: 8px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header-marquee {
+            flex: 1;
+            margin: 0 60px;
+            text-align: center;
+        }
+
+        .header-marquee h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(255, 0, 0, 0.6);
+            margin: 0;
+            text-align: center;
+        }
+
+        .date-time-section {
+            flex: 1;
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        .date-time-section .date {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .date-time-section .time {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin-left: auto;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .wallet-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .wallet-section h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .wallet-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .wallet-card h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .balance-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .add-money-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .add-money-btn:hover {
+            background: #45a049;
+        }
+
+        .withdraw-btn {
+            background: #FF9800;
+            color: white;
+        }
+
+        .withdraw-btn:hover {
+            background: #e68900;
+        }
+
+        .transaction-section {
+            margin-top: 30px;
+        }
+
+        .transaction-section h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .transaction-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-type {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .amount-credit {
+            color: #4CAF50;
+        }
+
+        .amount-debit {
+            color: #f44336;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .wallet-section {
+                padding: 30px 20px;
+            }
+
+            .wallet-section h1 {
+                font-size: 24px;
+            }
+
+            .wallet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDhDMTMuMzcyIDggOCAxMy4zNzIgOCAyMEM4IDI2LjYyOCAxMy4zNzIgMzIgMjAgMzJDMjYuNjI4IDMyIDMyIDI2LjYyOCAzMiAyMEMzMiAxMy4zNzIgMjYuNjI4IDggMjAgOFoiIGZpbGw9IiM2NjdlZWEiLz4KPHBhdGggZD0iTTIwIDEyQzE2LjY5IDEyIDE0IDE0LjY5IDE0IDE4QzE0IDIxLjMxIDE2LjY5IDI0IDIwIDI0QzIzLjMxIDI0IDI2IDIxLjMxIDI2IDE4QzI2IDE0LjY5IDIzLjMxIDEyIDIwIDEyWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE2IDE2QzE2IDE2IDE4IDE4IDIwIDE4QzIyIDE4IDI0IDE2IDI0IDE2IiBzdHJva2U9IiM2NjdlZWEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0xMiAyNkMxMiAyNiAxNiAyOCAyMCAyOEMyNCAyOCAyOCAyNiAyOCAyNiIgc3Ryb2tlPSIjNjY3ZWVhIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K" alt="Eye Logo">
+            </div>
+            <div class="header-marquee">
+                <h1>Vision Lottery</h1>
+            </div>
+            <div class="date-time-section">
+                <div class="date">Today: Monday, January 15, 2024</div>
+                <div class="time">Current Time: 2:30:45 PM</div>
+            </div>
+            <div class="nav-links">
+                <div class="dropdown">
+                    <button class="dropdown-btn" style="width: 40px; height: 40px; border-radius: 50%; background: #667eea; color: white; font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center; padding: 0;">S</button>
+                    <div class="dropdown-content">
+                        <div style="padding: 12px 16px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; font-size: 14px; color: #666;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="width: 24px; height: 24px; border-radius: 50%; background: #667eea; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">S</div>
+                                <div style="color: #333; font-weight: 500; font-size: 14px;">sharad@gmail.com</div>
+                            </div>
+                        </div>
+                        <a href="profile.html">Profile</a>
+                        <a href="help.html">Help</a>
+                        <a href="login.html">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="wallet-section">
+            <h1>💰 My Wallet</h1>
+            
+            <div class="wallet-grid">
+                <div class="wallet-card">
+                    <h3>Current Balance</h3>
+                    <div class="balance-amount">₹2,450</div>
+                    <div class="balance-label">Available for betting</div>
+                    <div class="wallet-actions">
+                        <button class="action-btn add-money-btn">Add Money</button>
+                        <button class="action-btn withdraw-btn">Withdraw</button>
+                    </div>
+                </div>
+                
+                <div class="wallet-card">
+                    <h3>Total Winnings</h3>
+                    <div class="balance-amount">₹8,750</div>
+                    <div class="balance-label">All time earnings</div>
+                </div>
+                
+                <div class="wallet-card">
+                    <h3>Redeem Points</h3>
+                    <div class="balance-amount">1,250</div>
+                    <div class="balance-label">Points available</div>
+                    <div class="wallet-actions">
+                        <button class="action-btn add-money-btn">Redeem</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== PAYMENT SECTION ===================== -->
+            <div id="paymentSection" style="display: none; margin-top: 30px; background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #333; font-size: 20px; margin-bottom: 20px; text-align: center;">🎫 Ticket Purchase Payment</h3>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                    <div>
+                        <div style="font-size: 16px; color: #666; margin-bottom: 5px;">Purchase Amount:</div>
+                        <div id="purchaseAmount" style="font-size: 24px; font-weight: bold; color: #e74c3c;">₹0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 16px; color: #666; margin-bottom: 5px;">Current Balance:</div>
+                        <div id="currentBalance" style="font-size: 24px; font-weight: bold; color: #4CAF50;">₹2,450</div>
+                    </div>
+                </div>
+                
+                <div id="paymentStatus" style="text-align: center; margin-bottom: 20px;">
+                    <div id="insufficientFunds" style="display: none; color: #e74c3c; font-weight: bold; padding: 10px; background: #ffebee; border-radius: 8px; margin-bottom: 15px;">
+                        ⚠️ Insufficient Balance! Please add more money to your wallet.
+                    </div>
+                    <div id="sufficientFunds" style="display: none; color: #4CAF50; font-weight: bold; padding: 10px; background: #e8f5e8; border-radius: 8px; margin-bottom: 15px;">
+                        ✅ Sufficient Balance! You can proceed with the purchase.
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button id="deductBtn" style="padding: 12px 30px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; display: none;">
+                        💳 Deduct & Purchase
+                    </button>
+                    <button onclick="addMoneyToWallet()" style="padding: 12px 30px; background: #FF9800; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                        💰 Add Money
+                    </button>
+                    <button onclick="goBackToProfile()" style="padding: 12px 30px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
+                        ↩️ Back to Profile
+                    </button>
+                </div>
+            </div>
+
+            <div class="transaction-section">
+                <h3>Recent Transactions</h3>
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-type">Ticket Purchase</div>
+                            <div class="transaction-date">Today, 2:15 PM</div>
+                        </div>
+                        <div class="transaction-amount amount-debit">-₹50</div>
+                    </div>
+                    
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-type">Winning Amount</div>
+                            <div class="transaction-date">Today, 1:30 PM</div>
+                        </div>
+                        <div class="transaction-amount amount-credit">+₹400</div>
+                    </div>
+                    
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-type">Money Added</div>
+                            <div class="transaction-date">Yesterday, 5:45 PM</div>
+                        </div>
+                        <div class="transaction-amount amount-credit">+₹1,000</div>
+                    </div>
+                    
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-type">Ticket Purchase</div>
+                            <div class="transaction-date">Yesterday, 3:20 PM</div>
+                        </div>
+                        <div class="transaction-amount amount-debit">-₹100</div>
+                    </div>
+                    
+                    <div class="transaction-item">
+                        <div class="transaction-info">
+                            <div class="transaction-type">Winning Amount</div>
+                            <div class="transaction-date">Yesterday, 2:10 PM</div>
+                        </div>
+                        <div class="transaction-amount amount-credit">+₹800</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== URL PARAMETER HANDLING =====================
+        // Get amount from URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // ===================== WALLET BALANCE MANAGEMENT =====================
+        let walletBalance = 2450; // Initial balance
+
+        function updateBalanceDisplay() {
+            document.getElementById('currentBalance').textContent = '₹' + walletBalance.toLocaleString();
+        }
+
+        function addMoneyToWallet() {
+            const amount = prompt('Enter amount to add:');
+            if (amount && !isNaN(amount) && amount > 0) {
+                walletBalance += parseInt(amount);
+                updateBalanceDisplay();
+                checkPaymentStatus();
+                alert('₹' + amount + ' added to wallet successfully!');
+            } else {
+                alert('Please enter a valid amount!');
+            }
+        }
+
+        // ===================== PAYMENT PROCESSING =====================
+        function checkPaymentStatus() {
+            const purchaseAmount = parseInt(document.getElementById('purchaseAmount').textContent.replace('₹', '').replace(',', ''));
+            const insufficientFunds = document.getElementById('insufficientFunds');
+            const sufficientFunds = document.getElementById('sufficientFunds');
+            const deductBtn = document.getElementById('deductBtn');
+
+            if (walletBalance >= purchaseAmount) {
+                insufficientFunds.style.display = 'none';
+                sufficientFunds.style.display = 'block';
+                deductBtn.style.display = 'inline-block';
+            } else {
+                insufficientFunds.style.display = 'block';
+                sufficientFunds.style.display = 'none';
+                deductBtn.style.display = 'none';
+            }
+        }
+
+        function deductAndPurchase() {
+            const purchaseAmount = parseInt(document.getElementById('purchaseAmount').textContent.replace('₹', '').replace(',', ''));
+            
+            if (walletBalance >= purchaseAmount) {
+                walletBalance -= purchaseAmount;
+                updateBalanceDisplay();
+                
+                // Add transaction to history
+                addTransaction('Ticket Purchase', -purchaseAmount);
+                
+                alert('🎉 Purchase successful! ₹' + purchaseAmount + ' deducted from wallet.');
+                
+                // Hide payment section after successful purchase
+                document.getElementById('paymentSection').style.display = 'none';
+            } else {
+                alert('❌ Insufficient balance! Please add more money.');
+            }
+        }
+
+        function addTransaction(type, amount) {
+            const transactionList = document.querySelector('.transaction-list');
+            const transactionItem = document.createElement('div');
+            transactionItem.className = 'transaction-item';
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            transactionItem.innerHTML = `
+                <div class="transaction-info">
+                    <div class="transaction-type">${type}</div>
+                    <div class="transaction-date">Today, ${timeString}</div>
+                </div>
+                <div class="transaction-amount ${amount > 0 ? 'amount-credit' : 'amount-debit'}">
+                    ${amount > 0 ? '+' : ''}₹${Math.abs(amount)}
+                </div>
+            `;
+            
+            transactionList.insertBefore(transactionItem, transactionList.firstChild);
+        }
+
+        function goBackToProfile() {
+            window.location.href = 'profile.html';
+        }
+
+        // ===================== PAGE LOAD LOGIC =====================
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalAmount = getUrlParameter('totalAmount');
+            
+            if (totalAmount && totalAmount > 0) {
+                // Show payment section
+                document.getElementById('paymentSection').style.display = 'block';
+                
+                // Set purchase amount
+                document.getElementById('purchaseAmount').textContent = '₹' + parseInt(totalAmount).toLocaleString();
+                
+                // Check payment status
+                checkPaymentStatus();
+            }
+            
+            // Add event listener for deduct button
+            document.getElementById('deductBtn').addEventListener('click', deductAndPurchase);
+        });
+    </script>
+</body>
+</html> 
