@@ -1,1 +1,1 @@
-# VisionLottery
+# VisionLottery is create for provide online lottery platform to user old traditional way to new online traditional way
