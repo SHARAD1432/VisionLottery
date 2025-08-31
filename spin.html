@@ -6,7 +6,6 @@
   <style>
     body {
       background: #f2f2f2;
-      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -96,7 +95,7 @@
 </head>
 <body>
 
-  <h2>🎯 Spin to Win!</h2>
+  <h2> Spin to Win!</h2>
   <div class="wheel-container">
     <div class="pointer"></div>
     <div class="wheel" id="wheel"></div>
@@ -106,7 +105,7 @@
   <div id="result"></div>
 
   <div id="history">
-    <h3>🎉 Reward History:</h3>
+    <h3> Reward History:</h3>
     <ul id="history-list"></ul>
   </div>
 
@@ -132,8 +131,8 @@
         lastSpinDate = today;
       }
 
-      if (spinCount >= 2) {
-        alert("⛔ You can spin only 2 times per day.");
+      if (spinCount >= 1) {
+        alert(" You can spin only one per day.");
         return false;
       }
 
@@ -141,8 +140,7 @@
     }
 
     function handleSpin() {
-      // 👇 Optional: add your own condition check here
-      // if (!conditionMet) return;
+     
 
       if (!canSpinToday()) return;
       spin();
@@ -168,7 +166,7 @@
         const color = colorNames[index];
         const emoji = colorEmojis[index];
 
-        const resultText = `🎁 You won: ${reward} points (${emoji} ${color})`;
+        const resultText = ` You won: ${reward} points (${emoji} ${color})`;
         result.textContent = resultText;
 
         const li = document.createElement("li");
