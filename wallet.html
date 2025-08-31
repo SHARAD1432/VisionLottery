@@ -12,8 +12,6 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
 
@@ -363,7 +361,7 @@
 
     <div class="container">
         <div class="wallet-section">
-            <h1>💰 My Wallet</h1>
+            <h1> My Wallet</h1>
             
             <div class="wallet-grid">
                 <div class="wallet-card">
@@ -376,11 +374,7 @@
                     </div>
                 </div>
                 
-                <div class="wallet-card">
-                    <h3>Total Winnings</h3>
-                    <div class="balance-amount">₹8,750</div>
-                    <div class="balance-label">All time earnings</div>
-                </div>
+                
                 
                 <div class="wallet-card">
                     <h3>Redeem Points</h3>
@@ -409,22 +403,22 @@
                 
                 <div id="paymentStatus" style="text-align: center; margin-bottom: 20px;">
                     <div id="insufficientFunds" style="display: none; color: #e74c3c; font-weight: bold; padding: 10px; background: #ffebee; border-radius: 8px; margin-bottom: 15px;">
-                        ⚠️ Insufficient Balance! Please add more money to your wallet.
+                         Insufficient Balance! Please add more money to your wallet.
                     </div>
                     <div id="sufficientFunds" style="display: none; color: #4CAF50; font-weight: bold; padding: 10px; background: #e8f5e8; border-radius: 8px; margin-bottom: 15px;">
-                        ✅ Sufficient Balance! You can proceed with the purchase.
+                         Sufficient Balance! You can proceed with the purchase.
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 15px; justify-content: center;">
                     <button id="deductBtn" style="padding: 12px 30px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; display: none;">
-                        💳 Deduct & Purchase
+                         Deduct & Purchase
                     </button>
                     <button onclick="addMoneyToWallet()" style="padding: 12px 30px; background: #FF9800; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                        💰 Add Money
+                         Add Money
                     </button>
                     <button onclick="goBackToProfile()" style="padding: 12px 30px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer;">
-                        ↩️ Back to Profile
+                        ↩ Back to Profile
                     </button>
                 </div>
             </div>
